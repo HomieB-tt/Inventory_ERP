@@ -1,69 +1,102 @@
-# Inventory/ERP — Patch 1: Core domain models
+# Inventory & Warehouse ERP
 
-## Before extracting this
-Make sure you've already run, in a fresh directory:
+A multi-tenant inventory management and order-processing system built with
+Ruby on Rails. Multiple companies (tenants) can each manage their own
+products, warehouses, suppliers, and stock — with every stock change
+recorded as an immutable ledger entry rather than a mutable "quantity"
+field, so stock levels are always derived and auditable.
+
+## Features
+
+- **Multi-tenant** — each `Company` is fully isolated; users belong to
+  exactly one company and only ever see that company's data.
+- **Role-based access** — `viewer`, `staff`, and `admin` roles per user.
+- **Product catalog** — SKUs, categories, unit pricing, and per-product
+  reorder thresholds for low-stock alerts.
+- **Warehouses & suppliers** — track stock across multiple physical
+  locations and the suppliers you buy from.
+- **Stock ledger** — every stock change (purchase receipt, sale, manual
+  adjustment) is recorded as a `StockMovement`. Current stock on hand is
+  computed by summing the ledger, never stored redundantly.
+- **Purchase orders** — draft → order → receive workflow; receiving stock
+  automatically generates the corresponding ledger entries.
+- **Sales orders** — draft → confirm → fulfill workflow; fulfilling an
+  order deducts stock via the same ledger mechanism.
+
+## Tech stack
+
+- Ruby 3.3+ / Rails 8
+- SQLite (Rails 8 defaults — used for the primary DB as well as Solid
+  Queue/Cache/Cable)
+- Turbo & Stimulus (Hotwire) for interactivity, no separate JS build step
+  (import maps)
+- Session-based authentication via Rails 8's built-in `has_secure_password`
+  authentication generator
+
+## Prerequisites
+
+You'll need Ruby 3.3+, Rails 8, and SQLite installed. The recommended way
+to install Ruby is via a version manager (`rbenv`) rather than your OS's
+system package:
+
+**Install rbenv + ruby-build**, then a Ruby version:
+```bash
+# Arch / Garuda
+sudo pacman -S rbenv
+
+# Debian / Ubuntu
+sudo apt install rbenv
+
+# macOS
+brew install rbenv
+
+rbenv init   # follow the shell hook instructions it prints, then restart your shell
+rbenv install 3.3.6
+rbenv global 3.3.6
+ruby -v      # confirm 3.3.x
 ```
-rails new inventory_erp
+
+**Install Rails 8**:
+```bash
+gem install rails -v '~> 8.0'
+rbenv rehash
+rails -v     # confirm 8.x.x
+```
+
+**Install SQLite dev libraries** (needed to build the `sqlite3` gem's
+native extension):
+```bash
+# Arch / Garuda
+sudo pacman -S sqlite
+
+# Debian / Ubuntu
+sudo apt install libsqlite3-dev
+
+# macOS
+brew install sqlite3
+```
+
+## Setup
+
+```bash
+git clone <this-repo-url>
 cd inventory_erp
-bin/rails generate authentication
-bin/rails db:migrate
+bundle install
+bin/rails db:setup      # creates the DB, loads the schema, runs db/seeds.rb if present
+bin/rails server
 ```
-This patch assumes `users` and `sessions` tables already exist (from the
-authentication generator) before you layer this on top.
 
-## How to apply
-1. Extract this zip's contents directly into your `inventory_erp/` root —
-   the `db/` and `app/` folders here match Rails' real paths, so files land
-   exactly where they belong.
-2. Do **not** copy anything from `manual_merge/` directly into `app/models/`
-   or `app/controllers/concerns/` — those two files (`user.rb`, `current.rb`,
-   `authentication.rb`) already exist from the generator and need small
-   hand edits, not overwrites. Each file in `manual_merge/` explains exactly
-   what to add.
-3. Run `bin/rails db:migrate`.
-4. Sanity check in `bin/rails console`:
-   ```ruby
-   c = Company.create!(name: "Acme Hostels")
-   u = User.create!(email_address: "a@a.com", password: "password123", company: c, role: :admin)
-   w = Warehouse.create!(company: c, name: "Main")
-   p = Product.create!(company: c, sku: "SKU1", name: "Bunk sheets", unit_price: 5, reorder_threshold: 10)
-   StockMovement.create!(company: c, product: p, warehouse: w, user: u, quantity: 50, movement_type: :manual_adjustment)
-   p.stock_on_hand # => 50
-   ```
+Visit `http://localhost:3000`. Create your first company and admin user
+either through the sign-up flow (once built) or via `bin/rails console`:
 
-## What's in this patch
-- `db/migrate/` — 10 migrations: companies, user tenancy/role columns,
-  warehouses, suppliers, products, stock_movements (the audit ledger),
-  purchase_orders + lines, sales_orders + lines.
-- `app/models/` — Company, Product, Warehouse, Supplier, StockMovement,
-  PurchaseOrder(+Line), SalesOrder(+Line). Business logic included:
-  `PurchaseOrder#receive!` and `SalesOrder#fulfill!` both create
-  `StockMovement` rows rather than mutating a stored quantity — stock levels
-  are always *derived* from the movement ledger via `Product#stock_on_hand`.
-- `manual_merge/` — instructions (not auto-applied files) for the two spots
-  that touch generator-created files: adding `company`/`role` to `User`,
-  and adding `Current.company` alongside `Current.session`.
-
-## Tenant isolation approach
-No `default_scope` gem magic — scoping is explicit and always goes through
-`Current.company`, e.g. `Current.company.products.find(params[:id])` in a
-controller. Verbose, but it means tenant isolation is never silently
-bypassed in a console session or background job where `Current` isn't set.
-
-## Git
-If `rails new` didn't skip git (it doesn't, by default), your project is
-already a git repo. After applying this patch:
+```ruby
+company = Company.create!(name: "Acme Hostels")
+User.create!(email_address: "admin@acme.com", password: "password123",
+             company: company, role: :admin)
 ```
-git add .
-git commit -m "Add core inventory/ERP domain models and migrations"
-```
-Then create the GitHub repo and push:
-```
-gh repo create inventory-erp --public --source=. --push
-```
-(or push manually if you don't have `gh` installed: create the repo on
-github.com, then `git remote add origin <url> && git push -u origin main`)
 
-## Next
-Controllers + views (index/show/new/edit for each resource, plus a
-low-stock dashboard) come in the next patch.
+## Status
+
+Core data model and business logic (companies, users/roles, products,
+warehouses, suppliers, stock ledger, purchase/sales order workflows) are in
+place. Controllers, views, and a low-stock dashboard are in progress.
