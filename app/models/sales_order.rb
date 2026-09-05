@@ -2,6 +2,7 @@ class SalesOrder < ApplicationRecord
   belongs_to :company
   belongs_to :user
   has_many :sales_order_lines, dependent: :destroy
+  accepts_nested_attributes_for :sales_order_lines, reject_if: :all_blank, allow_destroy: true
 
   enum :status, { draft: 0, confirmed: 1, fulfilled: 2, cancelled: 3 }
 

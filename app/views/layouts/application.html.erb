@@ -1,29 +1,46 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Inventory Erp" %></title>
+    <title>Inventory ERP</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Inventory Erp">
-    <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
-    <%= yield :head %>
-
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
-
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application" %>
     <%= javascript_importmap_tags %>
   </head>
-
   <body>
-    <%= yield %>
+    <% if Current.user %>
+      <div class="app-shell">
+        <nav class="sidebar" aria-label="Primary">
+          <div class="sidebar-brand"><%= Current.company&.name %></div>
+          <ul class="sidebar-nav">
+            <li><%= link_to "Dashboard", root_path %></li>
+            <li><%= link_to "Products", products_path %></li>
+            <li><%= link_to "Warehouses", warehouses_path %></li>
+            <li><%= link_to "Suppliers", suppliers_path %></li>
+            <li><%= link_to "Stock ledger", stock_movements_path %></li>
+            <li><%= link_to "Purchase orders", purchase_orders_path %></li>
+            <li><%= link_to "Sales orders", sales_orders_path %></li>
+          </ul>
+        </nav>
+        <div class="main-column">
+          <header class="topbar">
+            <span class="topbar-user"><%= Current.user.email_address %> · <%= Current.user.role %></span>
+            <%= button_to "Sign out", session_path, method: :delete, class: "link-button" %>
+          </header>
+          <main class="page">
+            <% if notice %><p class="flash flash-notice"><%= notice %></p><% end %>
+            <% if alert %><p class="flash flash-alert"><%= alert %></p><% end %>
+            <%= yield %>
+          </main>
+        </div>
+      </div>
+    <% else %>
+      <main class="page page-unauthenticated">
+        <% if notice %><p class="flash flash-notice"><%= notice %></p><% end %>
+        <% if alert %><p class="flash flash-alert"><%= alert %></p><% end %>
+        <%= yield %>
+      </main>
+    <% end %>
   </body>
 </html>

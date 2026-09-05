@@ -1,0 +1,68 @@
+<h1>Dashboard</h1>
+
+<div class="stat-grid">
+  <div class="stat">
+    <div class="stat-value"><%= @counts[:products] %></div>
+    <div class="stat-label">Products</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value"><%= @counts[:warehouses] %></div>
+    <div class="stat-label">Warehouses</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value"><%= @counts[:suppliers] %></div>
+    <div class="stat-label">Suppliers</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value"><%= @counts[:open_purchase_orders] %></div>
+    <div class="stat-label">Open purchase orders</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value"><%= @counts[:open_sales_orders] %></div>
+    <div class="stat-label">Open sales orders</div>
+  </div>
+</div>
+
+<h2>Low stock</h2>
+<% if @low_stock_products.any? %>
+  <table>
+    <thead>
+      <tr><th>SKU</th><th>Product</th><th>On hand</th><th>Reorder threshold</th></tr>
+    </thead>
+    <tbody>
+      <% @low_stock_products.each do |product| %>
+        <tr class="low-stock">
+          <td class="sku"><%= link_to product.sku, product %></td>
+          <td><%= product.name %></td>
+          <td class="qty"><%= product.stock_on_hand %></td>
+          <td class="qty"><%= product.reorder_threshold %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="empty-state">Nothing below its reorder threshold right now.</p>
+<% end %>
+
+<h2>Recent stock movements</h2>
+<% if @recent_movements.any? %>
+  <table>
+    <thead>
+      <tr><th>When</th><th>Product</th><th>Warehouse</th><th>Type</th><th>Qty</th><th>By</th></tr>
+    </thead>
+    <tbody>
+      <% @recent_movements.each do |m| %>
+        <tr>
+          <td><%= m.created_at.strftime("%b %-d, %H:%M") %></td>
+          <td><%= m.product.name %></td>
+          <td><%= m.warehouse.name %></td>
+          <td><%= m.movement_type.humanize %></td>
+          <td class="qty"><%= m.quantity %></td>
+          <td><%= m.user.email_address %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="empty-state">No stock movements recorded yet.</p>
+<% end %>

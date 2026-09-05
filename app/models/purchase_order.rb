@@ -3,6 +3,7 @@ class PurchaseOrder < ApplicationRecord
   belongs_to :supplier
   belongs_to :user
   has_many :purchase_order_lines, dependent: :destroy
+  accepts_nested_attributes_for :purchase_order_lines, reject_if: :all_blank, allow_destroy: true
 
   enum :status, { draft: 0, ordered: 1, received: 2, cancelled: 3 }
 

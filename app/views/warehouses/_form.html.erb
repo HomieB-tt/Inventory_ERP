@@ -1,0 +1,18 @@
+<%= form_with model: warehouse do |f| %>
+  <% if warehouse.errors.any? %>
+    <div class="error-list">
+      <% warehouse.errors.full_messages.each do |msg| %><p><%= msg %></p><% end %>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :location %>
+    <%= f.text_field :location %>
+  </div>
+
+  <%= f.submit %>
+<% end %>

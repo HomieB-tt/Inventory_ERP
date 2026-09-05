@@ -1,0 +1,12 @@
+<div class="page-header">
+  <h1><%= @warehouse.name %></h1>
+  <div>
+    <%= link_to "Edit", edit_warehouse_path(@warehouse), class: "btn" %>
+    <%= button_to "Delete", @warehouse, method: :delete, class: "btn-danger",
+          form: { data: { turbo_confirm: "Delete this warehouse?" } } %>
+  </div>
+</div>
+
+<p><%= @warehouse.location.presence || "No location set." %></p>
+
+<p><%= link_to "View stock ledger for this warehouse", stock_movements_path(warehouse_id: @warehouse.id) %></p>

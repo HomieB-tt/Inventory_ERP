@@ -1,0 +1,20 @@
+<div class="page-header">
+  <h1>Warehouses</h1>
+  <%= link_to "New warehouse", new_warehouse_path, class: "btn" %>
+</div>
+
+<% if @warehouses.any? %>
+  <table>
+    <thead><tr><th>Name</th><th>Location</th></tr></thead>
+    <tbody>
+      <% @warehouses.each do |w| %>
+        <tr>
+          <td><%= link_to w.name, w %></td>
+          <td><%= w.location %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="empty-state">No warehouses yet. <%= link_to "Add the first one", new_warehouse_path %>.</p>
+<% end %>

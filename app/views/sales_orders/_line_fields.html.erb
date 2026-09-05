@@ -1,0 +1,20 @@
+<div class="line-fields">
+  <div class="field">
+    <%= f.label :product_id, "Product" %>
+    <%= f.collection_select :product_id, Current.company.products.order(:name), :id, :name, include_blank: true %>
+  </div>
+  <div class="field">
+    <%= f.label :quantity, "Qty" %>
+    <%= f.number_field :quantity, min: 1 %>
+  </div>
+  <div class="field">
+    <%= f.label :unit_price, "Unit price" %>
+    <%= f.number_field :unit_price, step: 0.01, min: 0 %>
+  </div>
+  <% if f.object.persisted? %>
+    <div class="field">
+      <label>&nbsp;</label>
+      <%= f.check_box :_destroy %> <%= f.label :_destroy, "Remove" %>
+    </div>
+  <% end %>
+</div>

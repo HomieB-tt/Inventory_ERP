@@ -1,4 +1,20 @@
 Rails.application.routes.draw do
+
+  root "dashboard#index"
+
+  resources :products
+  resources :warehouses
+  resources :suppliers
+  resources :stock_movements, only: [:index]
+
+  resources :purchase_orders do
+    member { patch :receive }
+  end
+
+  resources :sales_orders do
+    member { patch :fulfill }
+  end
+
   resource :session
   resources :passwords, param: :token
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

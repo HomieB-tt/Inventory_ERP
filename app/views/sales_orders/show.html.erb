@@ -1,0 +1,48 @@
+<div class="page-header">
+  <div>
+    <h1>Sales order <span class="badge"><%= @sales_order.status %></span></h1>
+    <p class="page-subtitle">For <%= @sales_order.customer_name %></p>
+  </div>
+  <div>
+    <% unless @sales_order.fulfilled? %>
+      <%= link_to "Edit", edit_sales_order_path(@sales_order), class: "btn" %>
+    <% end %>
+    <%= button_to "Delete", @sales_order, method: :delete, class: "btn-danger",
+          form: { data: { turbo_confirm: "Delete this sales order?" } } %>
+  </div>
+</div>
+
+<p>Order date: <%= @sales_order.order_date %></p>
+
+<h2>Line items</h2>
+<table>
+  <thead><tr><th>Product</th><th>Qty</th><th>Unit price</th><th>Line total</th></tr></thead>
+  <tbody>
+    <% @sales_order.sales_order_lines.each do |line| %>
+      <tr>
+        <td><%= line.product.name %></td>
+        <td class="qty"><%= line.quantity %></td>
+        <td class="num"><%= number_to_currency(line.unit_price) %></td>
+        <td class="num"><%= number_to_currency(line.quantity * line.unit_price) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+  <tfoot>
+    <tr><td colspan="3"><strong>Total</strong></td><td class="num"><strong><%= number_to_currency(@sales_order.total_price) %></strong></td></tr>
+  </tfoot>
+</table>
+
+<% unless @sales_order.fulfilled? %>
+  <h2>Fulfill order</h2>
+  <%= form_with url: fulfill_sales_order_path(@sales_order), method: :patch do %>
+    <div class="field">
+      <label for="warehouse_id">Fulfill from warehouse</label>
+      <select name="warehouse_id" id="warehouse_id">
+        <% @warehouses.each do |w| %>
+          <option value="<%= w.id %>"><%= w.name %></option>
+        <% end %>
+      </select>
+    </div>
+    <%= submit_tag "Fulfill and deduct stock" %>
+  <% end %>
+<% end %>

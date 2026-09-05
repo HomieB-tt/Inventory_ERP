@@ -1,0 +1,27 @@
+<%= form_with model: purchase_order do |f| %>
+  <% if purchase_order.errors.any? %>
+    <div class="error-list">
+      <% purchase_order.errors.full_messages.each do |msg| %><p><%= msg %></p><% end %>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :supplier_id, "Supplier" %>
+    <%= f.collection_select :supplier_id, Current.company.suppliers.order(:name), :id, :name, include_blank: true %>
+  </div>
+  <div class="field">
+    <%= f.label :order_date %>
+    <%= f.date_field :order_date %>
+  </div>
+  <div class="field">
+    <%= f.label :expected_date %>
+    <%= f.date_field :expected_date %>
+  </div>
+
+  <h2>Line items</h2>
+  <%= f.fields_for :purchase_order_lines do |line_form| %>
+    <%= render "line_fields", f: line_form %>
+  <% end %>
+
+  <%= f.submit %>
+<% end %>

@@ -1,0 +1,22 @@
+<div class="page-header">
+  <h1>Sales orders</h1>
+  <%= link_to "New sales order", new_sales_order_path, class: "btn" %>
+</div>
+
+<% if @sales_orders.any? %>
+  <table>
+    <thead><tr><th>Date</th><th>Customer</th><th>Status</th><th>Total</th></tr></thead>
+    <tbody>
+      <% @sales_orders.each do |so| %>
+        <tr>
+          <td><%= link_to so.order_date, so %></td>
+          <td><%= so.customer_name %></td>
+          <td><span class="badge"><%= so.status %></span></td>
+          <td class="num"><%= number_to_currency(so.total_price) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="empty-state">No sales orders yet. <%= link_to "Create the first one", new_sales_order_path %>.</p>
+<% end %>

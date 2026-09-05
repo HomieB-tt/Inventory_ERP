@@ -1,0 +1,23 @@
+<%= form_with model: sales_order do |f| %>
+  <% if sales_order.errors.any? %>
+    <div class="error-list">
+      <% sales_order.errors.full_messages.each do |msg| %><p><%= msg %></p><% end %>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :customer_name %>
+    <%= f.text_field :customer_name %>
+  </div>
+  <div class="field">
+    <%= f.label :order_date %>
+    <%= f.date_field :order_date %>
+  </div>
+
+  <h2>Line items</h2>
+  <%= f.fields_for :sales_order_lines do |line_form| %>
+    <%= render "line_fields", f: line_form %>
+  <% end %>
+
+  <%= f.submit %>
+<% end %>

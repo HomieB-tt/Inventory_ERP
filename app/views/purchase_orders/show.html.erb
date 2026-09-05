@@ -1,0 +1,50 @@
+<div class="page-header">
+  <div>
+    <h1>Purchase order <span class="badge"><%= @purchase_order.status %></span></h1>
+    <p class="page-subtitle">Ordered <%= @purchase_order.order_date %></p>
+  </div>
+  <div>
+    <% unless @purchase_order.received? %>
+      <%= link_to "Edit", edit_purchase_order_path(@purchase_order), class: "btn" %>
+    <% end %>
+    <%= button_to "Delete", @purchase_order, method: :delete, class: "btn-danger",
+          form: { data: { turbo_confirm: "Delete this purchase order?" } } %>
+  </div>
+</div>
+
+<p>Supplier: <%= link_to @purchase_order.supplier.name, @purchase_order.supplier %></p>
+<p>Expected: <%= @purchase_order.expected_date || "Not set" %></p>
+
+<h2>Line items</h2>
+<table>
+  <thead><tr><th>Product</th><th>Ordered</th><th>Received</th><th>Unit cost</th><th>Line total</th></tr></thead>
+  <tbody>
+    <% @purchase_order.purchase_order_lines.each do |line| %>
+      <tr>
+        <td><%= line.product.name %></td>
+        <td class="qty"><%= line.quantity_ordered %></td>
+        <td class="qty"><%= line.quantity_received %></td>
+        <td class="num"><%= number_to_currency(line.unit_cost) %></td>
+        <td class="num"><%= number_to_currency(line.quantity_ordered * line.unit_cost) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+  <tfoot>
+    <tr><td colspan="4"><strong>Total</strong></td><td class="num"><strong><%= number_to_currency(@purchase_order.total_cost) %></strong></td></tr>
+  </tfoot>
+</table>
+
+<% unless @purchase_order.received? %>
+  <h2>Receive stock</h2>
+  <%= form_with url: receive_purchase_order_path(@purchase_order), method: :patch do %>
+    <div class="field">
+      <label for="warehouse_id">Receive into warehouse</label>
+      <select name="warehouse_id" id="warehouse_id">
+        <% @warehouses.each do |w| %>
+          <option value="<%= w.id %>"><%= w.name %></option>
+        <% end %>
+      </select>
+    </div>
+    <%= submit_tag "Receive remaining stock" %>
+  <% end %>
+<% end %>

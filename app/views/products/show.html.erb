@@ -1,0 +1,38 @@
+<div class="page-header">
+  <h1><%= @product.name %> <span class="badge"><%= @product.sku %></span></h1>
+  <div>
+    <%= link_to "Edit", edit_product_path(@product), class: "btn" %>
+    <%= button_to "Delete", @product, method: :delete, class: "btn-danger",
+          form: { data: { turbo_confirm: "Delete this product?" } } %>
+  </div>
+</div>
+
+<p><%= @product.description.presence || "No description." %></p>
+
+<h2>Stock on hand</h2>
+<table>
+  <thead><tr><th>Warehouse</th><th>Quantity</th></tr></thead>
+  <tbody>
+    <% @stock_by_warehouse.each do |warehouse, qty| %>
+      <tr>
+        <td><%= warehouse.name %></td>
+        <td class="qty"><%= qty %></td>
+      </tr>
+    <% end %>
+    <tr>
+      <td><strong>Total</strong></td>
+      <td class="qty"><strong><%= @product.stock_on_hand %></strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Details</h2>
+<table>
+  <tbody>
+    <tr><td>Category</td><td><%= @product.category.presence || "Not set" %></td></tr>
+    <tr><td>Unit price</td><td class="num"><%= number_to_currency(@product.unit_price) %></td></tr>
+    <tr><td>Reorder threshold</td><td class="qty"><%= @product.reorder_threshold %></td></tr>
+  </tbody>
+</table>
+
+<p><%= link_to "View full stock ledger for this product", stock_movements_path(product_id: @product.id) %></p>

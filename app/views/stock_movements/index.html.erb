@@ -1,0 +1,51 @@
+<h1>Stock ledger</h1>
+
+<%= form_with url: stock_movements_path, method: :get, local: true do %>
+  <div class="line-fields" style="grid-template-columns: 1fr 1fr auto;">
+    <div class="field">
+      <label for="product_id">Product</label>
+      <select name="product_id" id="product_id">
+        <option value="">All products</option>
+        <% @products.each do |p| %>
+          <option value="<%= p.id %>" <%= "selected" if params[:product_id].to_s == p.id.to_s %>><%= p.name %></option>
+        <% end %>
+      </select>
+    </div>
+    <div class="field">
+      <label for="warehouse_id">Warehouse</label>
+      <select name="warehouse_id" id="warehouse_id">
+        <option value="">All warehouses</option>
+        <% @warehouses.each do |w| %>
+          <option value="<%= w.id %>" <%= "selected" if params[:warehouse_id].to_s == w.id.to_s %>><%= w.name %></option>
+        <% end %>
+      </select>
+    </div>
+    <div class="field">
+      <label>&nbsp;</label>
+      <%= submit_tag "Filter" %>
+    </div>
+  </div>
+<% end %>
+
+<% if @stock_movements.any? %>
+  <table>
+    <thead>
+      <tr><th>When</th><th>Product</th><th>Warehouse</th><th>Type</th><th>Qty</th><th>By</th><th>Reference</th></tr>
+    </thead>
+    <tbody>
+      <% @stock_movements.each do |m| %>
+        <tr>
+          <td><%= m.created_at.strftime("%b %-d, %Y %H:%M") %></td>
+          <td><%= link_to m.product.name, m.product %></td>
+          <td><%= m.warehouse.name %></td>
+          <td><span class="badge"><%= m.movement_type.humanize %></span></td>
+          <td class="qty"><%= m.quantity %></td>
+          <td><%= m.user.email_address %></td>
+          <td><%= "#{m.reference_type} ##{m.reference_id}" if m.reference_type %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="empty-state">No stock movements match this filter.</p>
+<% end %>

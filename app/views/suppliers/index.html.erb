@@ -1,0 +1,21 @@
+<div class="page-header">
+  <h1>Suppliers</h1>
+  <%= link_to "New supplier", new_supplier_path, class: "btn" %>
+</div>
+
+<% if @suppliers.any? %>
+  <table>
+    <thead><tr><th>Name</th><th>Contact email</th><th>Phone</th></tr></thead>
+    <tbody>
+      <% @suppliers.each do |s| %>
+        <tr>
+          <td><%= link_to s.name, s %></td>
+          <td><%= s.contact_email %></td>
+          <td><%= s.phone %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="empty-state">No suppliers yet. <%= link_to "Add the first one", new_supplier_path %>.</p>
+<% end %>

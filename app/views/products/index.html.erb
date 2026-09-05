@@ -1,0 +1,25 @@
+<div class="page-header">
+  <h1>Products</h1>
+  <%= link_to "New product", new_product_path, class: "btn" %>
+</div>
+
+<% if @products.any? %>
+  <table>
+    <thead>
+      <tr><th>SKU</th><th>Name</th><th>Category</th><th>Unit price</th><th>On hand</th></tr>
+    </thead>
+    <tbody>
+      <% @products.each do |product| %>
+        <tr class="<%= "low-stock" if product.low_stock? %>">
+          <td class="sku"><%= link_to product.sku, product %></td>
+          <td><%= product.name %></td>
+          <td><%= product.category %></td>
+          <td class="num"><%= number_to_currency(product.unit_price) %></td>
+          <td class="qty"><%= product.stock_on_hand %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="empty-state">No products yet. <%= link_to "Add the first one", new_product_path %>.</p>
+<% end %>
