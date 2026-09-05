@@ -1,0 +1,32 @@
+<h1>Create your company</h1>
+
+<% if @company.errors.any? || @user.errors.any? %>
+  <div class="error-list">
+    <% (@company.errors.full_messages + @user.errors.full_messages).each do |msg| %>
+      <p><%= msg %></p>
+    <% end %>
+  </div>
+<% end %>
+
+<%= form_with url: registration_path, method: :post do %>
+  <div class="field">
+    <label for="company_name">Company name</label>
+    <input type="text" name="company[name]" id="company_name" value="<%= @company.name %>" required>
+  </div>
+  <div class="field">
+    <label for="user_email_address">Your email</label>
+    <input type="email" name="user[email_address]" id="user_email_address" value="<%= @user.email_address %>" required>
+  </div>
+  <div class="field">
+    <label for="user_password">Password</label>
+    <input type="password" name="user[password]" id="user_password" required>
+  </div>
+  <div class="field">
+    <label for="user_password_confirmation">Confirm password</label>
+    <input type="password" name="user[password_confirmation]" id="user_password_confirmation" required>
+  </div>
+
+  <%= submit_tag "Create company" %>
+<% end %>
+
+<p><%= link_to "Already have an account? Sign in", new_session_path %></p>
