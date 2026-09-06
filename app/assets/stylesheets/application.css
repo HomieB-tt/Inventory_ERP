@@ -1,22 +1,23 @@
 /* Design tokens
-   Palette: graphite surfaces, hairline borders, steel-blue as the one
-   active-action color, amber reserved ONLY for low-stock/alert states so
-   it always carries meaning rather than decorating. No card-shadow kit,
-   no gradients. Monospace is used only for actual tabular data (SKUs,
-   quantities, money) where fixed-width alignment matters. */
+   Palette: light neutral surfaces, hairline borders, steel-blue as the
+   one active-action color, amber reserved ONLY for low-stock/alert
+   states so it always carries meaning rather than decorating. No
+   card-shadow kit, no gradients. Monospace is used only for actual
+   tabular data (SKUs, quantities, money) where fixed-width alignment
+   matters. */
 
 :root {
-  --bg: #14171c;
-  --surface: #1c2128;
-  --surface-raised: #232933;
-  --border: #2a2f38;
-  --text: #e6e9ee;
-  --text-muted: #8b93a1;
-  --accent: #3e7cb1;
-  --accent-hover: #4d8fc7;
-  --warning: #d9a441;
-  --danger: #c1494c;
-  --success: #4a9d6e;
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --surface-raised: #eceef1;
+  --border: #d8dce2;
+  --text: #1c2128;
+  --text-muted: #5b6572;
+  --accent: #2f6690;
+  --accent-hover: #24506f;
+  --warning: #b9791f;
+  --danger: #a83a3d;
+  --success: #3d7a56;
 
   --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-data: "SF Mono", "IBM Plex Mono", ui-monospace, monospace;
@@ -102,9 +103,29 @@ a:hover { color: var(--accent-hover); text-decoration: underline; }
   max-width: 1000px;
 }
 
+/* Sign-in/sign-up/accept-invite pages. Centered vertically, and form
+   fields get spacing even where the view itself only wraps them in a
+   bare <div> (the Rails-generated sessions/new.html.erb does this,
+   since it predates our .field convention and isn't a file this
+   project owns). */
 .page-unauthenticated {
   max-width: 420px;
-  margin: 80px auto;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.page-unauthenticated form div {
+  margin-bottom: 16px;
+}
+
+.page-unauthenticated form label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 13px;
+  color: var(--text-muted);
 }
 
 h1 { font-size: 22px; font-weight: 600; margin: 0 0 20px; }
@@ -118,8 +139,8 @@ h2 { font-size: 17px; font-weight: 600; margin: 32px 0 12px; }
   margin-bottom: 20px;
   font-size: 14px;
 }
-.flash-notice { background: rgba(74, 157, 110, 0.15); border: 1px solid var(--success); }
-.flash-alert { background: rgba(193, 73, 76, 0.15); border: 1px solid var(--danger); }
+.flash-notice { background: rgba(61, 122, 86, 0.1); border: 1px solid var(--success); }
+.flash-alert { background: rgba(168, 58, 61, 0.1); border: 1px solid var(--danger); }
 
 .page-header {
   display: flex;
@@ -152,6 +173,7 @@ th {
 
 tr.low-stock {
   border-left: 3px solid var(--warning);
+  background: rgba(185, 121, 31, 0.05);
 }
 
 tr.low-stock td:first-child {
@@ -239,7 +261,7 @@ input:focus, select:focus, textarea:focus {
 .btn:hover, input[type="submit"]:hover { background: var(--accent-hover); }
 
 .btn-danger { background: transparent; border: 1px solid var(--danger); color: var(--danger); }
-.btn-danger:hover { background: rgba(193, 73, 76, 0.15); }
+.btn-danger:hover { background: rgba(168, 58, 61, 0.1); }
 
 .link-button {
   background: none;
@@ -252,6 +274,10 @@ input:focus, select:focus, textarea:focus {
 }
 .link-button:hover { color: var(--text); text-decoration: underline; }
 
+.remove-line:hover {
+  color: var(--danger);
+}
+
 .line-fields {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr auto;
@@ -262,7 +288,7 @@ input:focus, select:focus, textarea:focus {
 
 .error-list {
   border: 1px solid var(--danger);
-  background: rgba(193, 73, 76, 0.1);
+  background: rgba(168, 58, 61, 0.08);
   padding: 12px 16px;
   margin-bottom: 20px;
   border-radius: 3px;
