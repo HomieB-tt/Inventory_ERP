@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_06_100001) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_06_140001) do
   create_table "companies", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name", null: false
@@ -127,6 +127,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_06_100001) do
     t.index ["warehouse_id"], name: "index_stock_movements_on_warehouse_id"
   end
 
+  create_table "stock_transfers", force: :cascade do |t|
+    t.integer "company_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "from_warehouse_id", null: false
+    t.integer "product_id", null: false
+    t.integer "quantity", null: false
+    t.integer "to_warehouse_id", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["company_id"], name: "index_stock_transfers_on_company_id"
+    t.index ["from_warehouse_id"], name: "index_stock_transfers_on_from_warehouse_id"
+    t.index ["product_id"], name: "index_stock_transfers_on_product_id"
+    t.index ["to_warehouse_id"], name: "index_stock_transfers_on_to_warehouse_id"
+    t.index ["user_id"], name: "index_stock_transfers_on_user_id"
+  end
+
   create_table "suppliers", force: :cascade do |t|
     t.text "address"
     t.integer "company_id", null: false
@@ -176,6 +192,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_06_100001) do
   add_foreign_key "stock_movements", "products"
   add_foreign_key "stock_movements", "users"
   add_foreign_key "stock_movements", "warehouses"
+  add_foreign_key "stock_transfers", "companies"
+  add_foreign_key "stock_transfers", "products"
+  add_foreign_key "stock_transfers", "users"
+  add_foreign_key "stock_transfers", "warehouses", column: "from_warehouse_id"
+  add_foreign_key "stock_transfers", "warehouses", column: "to_warehouse_id"
   add_foreign_key "suppliers", "companies"
   add_foreign_key "users", "companies"
   add_foreign_key "warehouses", "companies"

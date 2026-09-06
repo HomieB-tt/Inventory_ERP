@@ -7,6 +7,7 @@ class Company < ApplicationRecord
   has_many :purchase_orders, dependent: :destroy
   has_many :sales_orders, dependent: :destroy
   has_many :invitations, dependent: :destroy
+  has_many :stock_transfers, dependent: :destroy
 
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true

@@ -1,0 +1,28 @@
+<h1>Transfer stock</h1>
+
+<%= form_with model: @transfer, url: stock_transfers_path do |f| %>
+  <% if @transfer.errors.any? %>
+    <div class="error-list">
+      <% @transfer.errors.full_messages.each do |msg| %><p><%= msg %></p><% end %>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :product_id, "Product" %>
+    <%= f.collection_select :product_id, Current.company.products.order(:name), :id, :name, include_blank: true %>
+  </div>
+  <div class="field">
+    <%= f.label :from_warehouse_id, "From warehouse" %>
+    <%= f.collection_select :from_warehouse_id, Current.company.warehouses.order(:name), :id, :name, include_blank: true %>
+  </div>
+  <div class="field">
+    <%= f.label :to_warehouse_id, "To warehouse" %>
+    <%= f.collection_select :to_warehouse_id, Current.company.warehouses.order(:name), :id, :name, include_blank: true %>
+  </div>
+  <div class="field">
+    <%= f.label :quantity %>
+    <%= f.number_field :quantity, min: 1 %>
+  </div>
+
+  <%= f.submit "Transfer stock" %>
+<% end %>
