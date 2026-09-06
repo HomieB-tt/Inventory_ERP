@@ -4,11 +4,13 @@
     <p class="page-subtitle">For <%= @sales_order.customer_name %></p>
   </div>
   <div>
-    <% unless @sales_order.fulfilled? %>
+    <% if Current.user.at_least?(:staff) && !@sales_order.fulfilled? %>
       <%= link_to "Edit", edit_sales_order_path(@sales_order), class: "btn" %>
     <% end %>
-    <%= button_to "Delete", @sales_order, method: :delete, class: "btn-danger",
-          form: { data: { turbo_confirm: "Delete this sales order?" } } %>
+    <% if Current.user.at_least?(:admin) %>
+      <%= button_to "Delete", @sales_order, method: :delete, class: "btn-danger",
+            form: { data: { turbo_confirm: "Delete this sales order?" } } %>
+    <% end %>
   </div>
 </div>
 
@@ -32,7 +34,7 @@
   </tfoot>
 </table>
 
-<% unless @sales_order.fulfilled? %>
+<% if !@sales_order.fulfilled? && Current.user.at_least?(:staff) %>
   <h2>Fulfill order</h2>
   <%= form_with url: fulfill_sales_order_path(@sales_order), method: :patch do %>
     <div class="field">

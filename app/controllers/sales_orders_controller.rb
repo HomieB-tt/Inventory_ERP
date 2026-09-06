@@ -1,4 +1,6 @@
 class SalesOrdersController < ApplicationController
+  before_action -> { require_role!(:staff) }, only: [:new, :create, :edit, :update, :fulfill]
+  before_action -> { require_role!(:admin) }, only: [:destroy]
   before_action :set_sales_order, only: [:show, :edit, :update, :destroy, :fulfill]
 
   def index
@@ -11,7 +13,7 @@ class SalesOrdersController < ApplicationController
 
   def new
     @sales_order = Current.company.sales_orders.new(order_date: Date.current)
-    3.times { @sales_order.sales_order_lines.build }
+    @sales_order.sales_order_lines.build
   end
 
   def create

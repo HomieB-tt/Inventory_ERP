@@ -1,6 +1,8 @@
 <div class="page-header">
   <h1>Suppliers</h1>
-  <%= link_to "New supplier", new_supplier_path, class: "btn" %>
+  <% if Current.user.at_least?(:staff) %>
+    <%= link_to "New supplier", new_supplier_path, class: "btn" %>
+  <% end %>
 </div>
 
 <% if @suppliers.any? %>
@@ -17,5 +19,7 @@
     </tbody>
   </table>
 <% else %>
-  <p class="empty-state">No suppliers yet. <%= link_to "Add the first one", new_supplier_path %>.</p>
+  <p class="empty-state">No suppliers yet.
+    <% if Current.user.at_least?(:staff) %><%= link_to "Add the first one", new_supplier_path %>.<% end %>
+  </p>
 <% end %>

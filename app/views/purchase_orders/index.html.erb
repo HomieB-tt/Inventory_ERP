@@ -1,6 +1,8 @@
 <div class="page-header">
   <h1>Purchase orders</h1>
-  <%= link_to "New purchase order", new_purchase_order_path, class: "btn" %>
+  <% if Current.user.at_least?(:staff) %>
+    <%= link_to "New purchase order", new_purchase_order_path, class: "btn" %>
+  <% end %>
 </div>
 
 <% if @purchase_orders.any? %>
@@ -18,5 +20,7 @@
     </tbody>
   </table>
 <% else %>
-  <p class="empty-state">No purchase orders yet. <%= link_to "Create the first one", new_purchase_order_path %>.</p>
+  <p class="empty-state">No purchase orders yet.
+    <% if Current.user.at_least?(:staff) %><%= link_to "Create the first one", new_purchase_order_path %>.<% end %>
+  </p>
 <% end %>

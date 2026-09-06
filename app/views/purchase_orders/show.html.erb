@@ -4,11 +4,13 @@
     <p class="page-subtitle">Ordered <%= @purchase_order.order_date %></p>
   </div>
   <div>
-    <% unless @purchase_order.received? %>
+    <% if Current.user.at_least?(:staff) && !@purchase_order.received? %>
       <%= link_to "Edit", edit_purchase_order_path(@purchase_order), class: "btn" %>
     <% end %>
-    <%= button_to "Delete", @purchase_order, method: :delete, class: "btn-danger",
-          form: { data: { turbo_confirm: "Delete this purchase order?" } } %>
+    <% if Current.user.at_least?(:admin) %>
+      <%= button_to "Delete", @purchase_order, method: :delete, class: "btn-danger",
+            form: { data: { turbo_confirm: "Delete this purchase order?" } } %>
+    <% end %>
   </div>
 </div>
 
@@ -34,7 +36,7 @@
   </tfoot>
 </table>
 
-<% unless @purchase_order.received? %>
+<% if !@purchase_order.received? && Current.user.at_least?(:staff) %>
   <h2>Receive stock</h2>
   <%= form_with url: receive_purchase_order_path(@purchase_order), method: :patch do %>
     <div class="field">
