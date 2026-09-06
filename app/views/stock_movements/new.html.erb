@@ -1,0 +1,31 @@
+<h1>Adjust stock</h1>
+<p class="page-subtitle">Use this to add initial stock, correct counts after a
+physical audit, or record damage/shrinkage. This bypasses purchase orders,
+so a reason is required for the audit trail.</p>
+
+<%= form_with model: @stock_movement, url: stock_movements_path do |f| %>
+  <% if @stock_movement.errors.any? %>
+    <div class="error-list">
+      <% @stock_movement.errors.full_messages.each do |msg| %><p><%= msg %></p><% end %>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :product_id, "Product" %>
+    <%= f.collection_select :product_id, Current.company.products.order(:name), :id, :name, include_blank: true %>
+  </div>
+  <div class="field">
+    <%= f.label :warehouse_id, "Warehouse" %>
+    <%= f.collection_select :warehouse_id, Current.company.warehouses.order(:name), :id, :name, include_blank: true %>
+  </div>
+  <div class="field">
+    <%= f.label :quantity, "Quantity (positive to add, negative to remove)" %>
+    <%= f.number_field :quantity %>
+  </div>
+  <div class="field">
+    <%= f.label :notes, "Reason" %>
+    <%= f.text_area :notes, placeholder: "e.g. Initial stock count, damaged goods write-off, physical count correction" %>
+  </div>
+
+  <%= f.submit "Save adjustment" %>
+<% end %>

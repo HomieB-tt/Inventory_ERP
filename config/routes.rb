@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   resources :products
   resources :warehouses
   resources :suppliers
-  resources :stock_movements, only: [:index]
+  resources :stock_movements, only: [:index, :new, :create]
   resources :stock_transfers, only: [:index, :new, :create]
 
   resources :purchase_orders do

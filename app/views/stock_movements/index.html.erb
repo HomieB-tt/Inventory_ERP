@@ -1,4 +1,9 @@
-<h1>Stock ledger</h1>
+<div class="page-header">
+  <h1>Stock ledger</h1>
+  <% if Current.user.at_least?(:staff) %>
+    <%= link_to "New adjustment", new_stock_movement_path, class: "btn" %>
+  <% end %>
+</div>
 
 <%= form_with url: stock_movements_path, method: :get, local: true do %>
   <div class="line-fields" style="grid-template-columns: 1fr 1fr auto;">
@@ -41,7 +46,7 @@
           <td><span class="badge"><%= m.movement_type.humanize %></span></td>
           <td class="qty"><%= m.quantity %></td>
           <td><%= m.user.email_address %></td>
-          <td><%= "#{m.reference_type} ##{m.reference_id}" if m.reference_type %></td>
+          <td><%= m.reference_type ? "#{m.reference_type} ##{m.reference_id}" : m.notes %></td>
         </tr>
       <% end %>
     </tbody>

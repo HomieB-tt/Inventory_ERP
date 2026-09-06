@@ -14,6 +14,7 @@ class StockMovement < ApplicationRecord
 
   validates :quantity, numericality: { other_than: 0 }
   validate :quantity_sign_matches_movement_type
+  validates :notes, presence: true, if: -> { movement_type == "manual_adjustment" }
 
   private
 
