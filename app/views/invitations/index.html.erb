@@ -1,0 +1,26 @@
+<div class="page-header">
+  <h1>Team invites</h1>
+  <%= link_to "New invite", new_invitation_path, class: "btn" %>
+</div>
+
+<% if @invitations.any? %>
+  <table>
+    <thead><tr><th>Email</th><th>Role</th><th>Expires</th><th>Invite link</th><th></th></tr></thead>
+    <tbody>
+      <% @invitations.each do |inv| %>
+        <tr>
+          <td><%= inv.email %></td>
+          <td><span class="badge"><%= inv.role %></span></td>
+          <td><%= inv.expires_at.strftime("%b %-d, %Y") %></td>
+          <td class="num"><%= accept_invitation_url(inv.token) %></td>
+          <td>
+            <%= button_to "Revoke", invitation_path(inv), method: :delete, class: "btn-danger",
+                  form: { data: { turbo_confirm: "Revoke this invite?" } } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="empty-state">No pending invites. <%= link_to "Invite someone", new_invitation_path %>.</p>
+<% end %>

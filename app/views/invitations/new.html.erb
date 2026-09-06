@@ -1,0 +1,20 @@
+<h1>Invite a teammate</h1>
+
+<%= form_with model: @invitation do |f| %>
+  <% if @invitation.errors.any? %>
+    <div class="error-list">
+      <% @invitation.errors.full_messages.each do |msg| %><p><%= msg %></p><% end %>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :email %>
+    <%= f.email_field :email %>
+  </div>
+  <div class="field">
+    <%= f.label :role %>
+    <%= f.select :role, Invitation.roles.keys.map { |r| [r.humanize, r] } %>
+  </div>
+
+  <%= f.submit "Create invite" %>
+<% end %>

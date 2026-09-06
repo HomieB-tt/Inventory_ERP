@@ -1,0 +1,19 @@
+<h1>Join <%= @invitation.company.name %></h1>
+<p class="page-subtitle">You've been invited as <strong><%= @invitation.role %></strong>. Set a password to finish joining.</p>
+
+<%= form_with url: accept_invitation_path(@invitation.token), method: :post do %>
+  <div class="field">
+    <label>Email</label>
+    <input type="email" value="<%= @invitation.email %>" disabled>
+  </div>
+  <div class="field">
+    <label for="password">Password</label>
+    <input type="password" name="password" id="password" required>
+  </div>
+  <div class="field">
+    <label for="password_confirmation">Confirm password</label>
+    <input type="password" name="password_confirmation" id="password_confirmation" required>
+  </div>
+
+  <%= submit_tag "Join company" %>
+<% end %>

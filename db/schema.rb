@@ -10,13 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_05_160304) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_06_100001) do
   create_table "companies", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.string "slug", null: false
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_companies_on_slug", unique: true
+  end
+
+  create_table "invitations", force: :cascade do |t|
+    t.datetime "accepted_at"
+    t.integer "company_id", null: false
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.datetime "expires_at"
+    t.integer "invited_by_id", null: false
+    t.integer "role", default: 0, null: false
+    t.string "token", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "email"], name: "index_invitations_on_company_id_and_email", unique: true, where: "accepted_at IS NULL"
+    t.index ["company_id"], name: "index_invitations_on_company_id"
+    t.index ["invited_by_id"], name: "index_invitations_on_invited_by_id"
+    t.index ["token"], name: "index_invitations_on_token", unique: true
   end
 
   create_table "products", force: :cascade do |t|
@@ -143,6 +159,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_05_160304) do
     t.index ["company_id"], name: "index_warehouses_on_company_id"
   end
 
+  add_foreign_key "invitations", "companies"
+  add_foreign_key "invitations", "users", column: "invited_by_id"
   add_foreign_key "products", "companies"
   add_foreign_key "purchase_order_lines", "products"
   add_foreign_key "purchase_order_lines", "purchase_orders"

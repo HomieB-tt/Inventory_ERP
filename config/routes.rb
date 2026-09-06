@@ -15,6 +15,10 @@ Rails.application.routes.draw do
     member { patch :fulfill }
   end
 
+  resources :invitations, only: [:index, :new, :create, :destroy]
+  get "invite/:token", to: "accept_invitations#show", as: :accept_invitation
+  post "invite/:token", to: "accept_invitations#create"
+
   resource :session
   resource :registration, only: [:new, :create]
   resources :passwords, param: :token

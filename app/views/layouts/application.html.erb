@@ -21,6 +21,9 @@
             <li><%= link_to "Stock ledger", stock_movements_path %></li>
             <li><%= link_to "Purchase orders", purchase_orders_path %></li>
             <li><%= link_to "Sales orders", sales_orders_path %></li>
+            <% if Current.user.at_least?(:admin) %>
+              <li><%= link_to "Team", invitations_path %></li>
+            <% end %>
           </ul>
         </nav>
         <div class="main-column">
