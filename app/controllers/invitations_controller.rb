@@ -3,7 +3,8 @@ class InvitationsController < ApplicationController
   before_action :set_invitation, only: [:destroy]
 
   def index
-    @invitations = Current.company.invitations.pending.order(created_at: :desc)
+    @team_members = Current.company.users.order(:email_address)
+    @invitations = Current.company.invitations.order(created_at: :desc)
   end
 
   def new
@@ -21,8 +22,12 @@ class InvitationsController < ApplicationController
   end
 
   def destroy
-    @invitation.destroy
-    redirect_to invitations_path, notice: "Invitation revoked."
+    if @invitation.pending?
+      @invitation.destroy
+      redirect_to invitations_path, notice: "Invitation revoked."
+    else
+      redirect_to invitations_path, alert: "Only pending invitations can be revoked."
+    end
   end
 
   private

@@ -1,26 +1,53 @@
+<h1>Team</h1>
+
+<h2>Members</h2>
+<table>
+  <thead><tr><th>Email</th><th>Role</th><th>Joined</th></tr></thead>
+  <tbody>
+    <% @team_members.each do |member| %>
+      <tr>
+        <td><%= member.email_address %></td>
+        <td><span class="badge"><%= member.role %></span></td>
+        <td><%= member.created_at.strftime("%b %-d, %Y") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
 <div class="page-header">
-  <h1>Team invites</h1>
+  <h2>Invitations</h2>
   <%= link_to "New invite", new_invitation_path, class: "btn" %>
 </div>
 
 <% if @invitations.any? %>
   <table>
-    <thead><tr><th>Email</th><th>Role</th><th>Expires</th><th>Invite link</th><th></th></tr></thead>
+    <thead><tr><th>Email</th><th>Role</th><th>Status</th><th>Expires</th><th>Invite link</th><th></th></tr></thead>
     <tbody>
       <% @invitations.each do |inv| %>
         <tr>
           <td><%= inv.email %></td>
           <td><span class="badge"><%= inv.role %></span></td>
-          <td><%= inv.expires_at.strftime("%b %-d, %Y") %></td>
-          <td class="num"><%= accept_invitation_url(inv.token) %></td>
           <td>
-            <%= button_to "Revoke", invitation_path(inv), method: :delete, class: "btn-danger",
-                  form: { data: { turbo_confirm: "Revoke this invite?" } } %>
+            <% if inv.status == "accepted" %>
+              <span class="badge badge-success">Accepted</span>
+            <% elsif inv.status == "expired" %>
+              <span class="badge">Expired</span>
+            <% else %>
+              <span class="badge badge-warning">Pending</span>
+            <% end %>
+          </td>
+          <td><%= inv.expires_at.strftime("%b %-d, %Y") %></td>
+          <td class="num"><%= inv.pending? ? accept_invitation_url(inv.token) : "N/A" %></td>
+          <td>
+            <% if inv.pending? %>
+              <%= button_to "Revoke", invitation_path(inv), method: :delete, class: "btn-danger",
+                    form: { data: { turbo_confirm: "Revoke this invite?" } } %>
+            <% end %>
           </td>
         </tr>
       <% end %>
     </tbody>
   </table>
 <% else %>
-  <p class="empty-state">No pending invites. <%= link_to "Invite someone", new_invitation_path %>.</p>
+  <p class="empty-state">No invitations yet. <%= link_to "Invite someone", new_invitation_path %>.</p>
 <% end %>

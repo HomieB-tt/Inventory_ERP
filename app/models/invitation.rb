@@ -19,6 +19,12 @@ class Invitation < ApplicationRecord
     accepted_at.nil? && !expired?
   end
 
+  def status
+    return "accepted" if accepted_at.present?
+    return "expired" if expired?
+    "pending"
+  end
+
   # Creates the invited User and marks this invitation accepted, both
   # inside a transaction so a failed User creation doesn't leave the
   # invitation in a half-consumed state.
