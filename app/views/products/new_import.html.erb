@@ -1,0 +1,16 @@
+<h1>Import products from CSV</h1>
+<p class="page-subtitle">Upload a CSV with columns: sku, name, description,
+category, unit_price, reorder_threshold. Products are matched by SKU:
+existing ones are updated, new SKUs are created. The "total_stock_on_hand"
+column from an export is ignored on import, since stock changes only
+happen through the ledger (adjustments, receiving, transfers, sales).</p>
+
+<%= form_with url: import_products_path, method: :post, multipart: true do %>
+  <div class="field">
+    <label for="file">CSV file</label>
+    <input type="file" name="file" id="file" accept=".csv" required>
+  </div>
+  <%= submit_tag "Import" %>
+<% end %>
+
+<p><%= link_to "Download current products as a starting template", export_products_path %></p>

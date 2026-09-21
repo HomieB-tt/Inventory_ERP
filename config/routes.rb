@@ -2,7 +2,13 @@ Rails.application.routes.draw do
 
   root "dashboard#index"
 
-  resources :products
+  resources :products do
+    collection do
+      get :export
+      get :new_import
+      post :import
+    end
+  end
   resources :warehouses
   resources :suppliers
   resources :stock_movements, only: [:index, :new, :create]
