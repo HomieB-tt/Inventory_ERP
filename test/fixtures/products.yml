@@ -1,19 +1,8 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  company: one
-  sku: MyString
-  name: MyString
-  description: MyText
-  category: MyString
-  unit_price: 9.99
-  reorder_threshold: 1
-
-two:
-  company: two
-  sku: MyString
-  name: MyString
-  description: MyText
-  category: MyString
-  unit_price: 9.99
-  reorder_threshold: 1
+# Empty on purpose. Rails' model generator auto-fills new fixture files
+# with two dummy rows ("one"/"two") sharing identical placeholder values
+# for every column, which breaks any unique constraint the schema adds
+# later (this file originally caused a companies.slug uniqueness
+# violation during test setup). Nothing in this project's test suite
+# relies on fixtures. Test data is built directly in each test's setup
+# block instead. See test/support/authentication_test_helper.rb and
+# test/integration/*.

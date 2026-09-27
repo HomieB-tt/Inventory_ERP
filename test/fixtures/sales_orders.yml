@@ -1,15 +1,8 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  company: one
-  user: one
-  status: 1
-  customer_name: MyString
-  order_date: 2026-09-05
-
-two:
-  company: two
-  user: two
-  status: 1
-  customer_name: MyString
-  order_date: 2026-09-05
+# Empty on purpose. Rails' model generator auto-fills new fixture files
+# with two dummy rows ("one"/"two") sharing identical placeholder values
+# for every column, which breaks any unique constraint the schema adds
+# later (this file originally caused a companies.slug uniqueness
+# violation during test setup). Nothing in this project's test suite
+# relies on fixtures. Test data is built directly in each test's setup
+# block instead. See test/support/authentication_test_helper.rb and
+# test/integration/*.
