@@ -9,7 +9,8 @@ field, so stock levels are always derived and auditable.
 ## Features
 
 - **Multi-tenant**: each `Company` is fully isolated; users belong to
-  exactly one company and only ever see that company's data.
+  exactly one company and only ever see that company's data. Covered by
+  an automated test suite (see Testing below).
 - **Self-serve sign-up**: anyone can create a new company and its first
   admin user from the sign-up page, no console access needed.
 - **Team management**: admins can see the full member roster (email,
@@ -21,9 +22,8 @@ field, so stock levels are always derived and auditable.
   operations: create/edit records, receive purchase orders, fulfill sales
   orders, transfer stock, record manual adjustments, import products),
   and `admin` (everything staff can do, plus deleting records and
-  managing the team). Enforced both in controllers (a request for an
-  action above your role redirects with an error) and in views (buttons
-  you can't use aren't shown).
+  managing the team). Enforced in controllers, views, and covered by an
+  automated test suite.
 - **Product catalog**: SKUs, categories, unit pricing, and per-product
   reorder thresholds, with low-stock highlighting throughout the UI.
 - **CSV import/export for products**: export the full catalog (including
@@ -66,6 +66,8 @@ field, so stock levels are always derived and auditable.
   permission model is a simple viewer/staff/admin rank check, not
   per-resource ownership rules, so a full policy-object gem like Pundit
   would be more machinery than the problem needs)
+- Minitest (Rails' default) for integration tests covering tenant
+  isolation and role enforcement
 - Plain CSS design system (no framework): light neutral surfaces with a
   steel-blue accent, monospace reserved for tabular data (SKUs,
   quantities, currency)
@@ -144,13 +146,28 @@ up, or sign in if you already have an account. To seed initial stock for a
 new product, use "New adjustment" from the Stock ledger page rather than
 the console.
 
+## Testing
+
+```bash
+bin/rails test
+```
+
+Two integration test files cover the guarantees the multi-tenant design
+depends on:
+- `test/integration/tenant_isolation_test.rb`: a user from one company
+  can't view, edit, delete, or see in a listing another company's data,
+  even when using the highest-privileged (admin) role, which confirms
+  the block comes from tenant scoping itself and not incidentally from a
+  role check.
+- `test/integration/role_enforcement_test.rb`: viewers can't create or
+  delete anything and are redirected away from forms they try to reach
+  directly by URL; staff can create but not delete; only admins can
+  delete or reach the team management page.
+
 ## Status
 
 Core data model, business logic, controllers/views for all core resources,
 the dashboard, self-serve sign-up, team management, dynamic order line
 items, role-based access control, multi-warehouse transfers, manual stock
-adjustments, and CSV import/export are in place and usable end-to-end.
-
-**Roadmap:**
-- Automated tests asserting cross-tenant data access fails, and that each
-  role's permissions are actually enforced
+adjustments, CSV import/export, and an automated test suite for tenant
+isolation and role enforcement are all in place and usable end-to-end.
