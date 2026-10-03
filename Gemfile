@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "ruby-vips","~>2.0"
+gem "ruby-vips", "~>2.0"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.1.3", ">= 8.1.3.1"

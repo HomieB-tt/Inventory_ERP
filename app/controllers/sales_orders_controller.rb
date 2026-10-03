@@ -1,7 +1,7 @@
 class SalesOrdersController < ApplicationController
-  before_action -> { require_role!(:staff) }, only: [:new, :create, :edit, :update, :fulfill]
-  before_action -> { require_role!(:admin) }, only: [:destroy]
-  before_action :set_sales_order, only: [:show, :edit, :update, :destroy, :fulfill]
+  before_action -> { require_role!(:staff) }, only: [ :new, :create, :edit, :update, :fulfill ]
+  before_action -> { require_role!(:admin) }, only: [ :destroy ]
+  before_action :set_sales_order, only: [ :show, :edit, :update, :destroy, :fulfill ]
 
   def index
     @sales_orders = Current.company.sales_orders.order(order_date: :desc)
@@ -60,7 +60,7 @@ class SalesOrdersController < ApplicationController
   def sales_order_params
     params.require(:sales_order).permit(
       :customer_name, :order_date, :status,
-      sales_order_lines_attributes: [:id, :product_id, :quantity, :unit_price, :_destroy]
+      sales_order_lines_attributes: [ :id, :product_id, :quantity, :unit_price, :_destroy ]
     )
   end
 end

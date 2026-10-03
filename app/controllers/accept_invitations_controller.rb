@@ -1,5 +1,5 @@
 class AcceptInvitationsController < ApplicationController
-  allow_unauthenticated_access only: [:show, :create]
+  allow_unauthenticated_access only: [ :show, :create ]
   before_action :set_invitation
 
   def show

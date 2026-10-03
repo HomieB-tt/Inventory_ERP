@@ -8,8 +8,8 @@ class DashboardController < ApplicationController
       products: Current.company.products.count,
       warehouses: Current.company.warehouses.count,
       suppliers: Current.company.suppliers.count,
-      open_purchase_orders: Current.company.purchase_orders.where(status: [:draft, :ordered]).count,
-      open_sales_orders: Current.company.sales_orders.where(status: [:draft, :confirmed]).count
+      open_purchase_orders: Current.company.purchase_orders.where(status: [ :draft, :ordered ]).count,
+      open_sales_orders: Current.company.sales_orders.where(status: [ :draft, :confirmed ]).count
     }
   end
 end

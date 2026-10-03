@@ -1,5 +1,5 @@
 class StockTransfersController < ApplicationController
-  before_action -> { require_role!(:staff) }, only: [:new, :create]
+  before_action -> { require_role!(:staff) }, only: [ :new, :create ]
 
   def index
     @transfers = Current.company.stock_transfers

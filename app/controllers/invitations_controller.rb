@@ -1,6 +1,6 @@
 class InvitationsController < ApplicationController
   before_action -> { require_role!(:admin) }
-  before_action :set_invitation, only: [:destroy]
+  before_action :set_invitation, only: [ :destroy ]
 
   def index
     @team_members = Current.company.users.order(:email_address)

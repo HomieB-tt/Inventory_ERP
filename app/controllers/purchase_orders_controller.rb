@@ -1,7 +1,7 @@
 class PurchaseOrdersController < ApplicationController
-  before_action -> { require_role!(:staff) }, only: [:new, :create, :edit, :update, :receive]
-  before_action -> { require_role!(:admin) }, only: [:destroy]
-  before_action :set_purchase_order, only: [:show, :edit, :update, :destroy, :receive]
+  before_action -> { require_role!(:staff) }, only: [ :new, :create, :edit, :update, :receive ]
+  before_action -> { require_role!(:admin) }, only: [ :destroy ]
+  before_action :set_purchase_order, only: [ :show, :edit, :update, :destroy, :receive ]
 
   def index
     @purchase_orders = Current.company.purchase_orders.includes(:supplier).order(order_date: :desc)
@@ -60,7 +60,7 @@ class PurchaseOrdersController < ApplicationController
   def purchase_order_params
     params.require(:purchase_order).permit(
       :supplier_id, :order_date, :expected_date, :status,
-      purchase_order_lines_attributes: [:id, :product_id, :quantity_ordered, :unit_cost, :_destroy]
+      purchase_order_lines_attributes: [ :id, :product_id, :quantity_ordered, :unit_cost, :_destroy ]
     )
   end
 end

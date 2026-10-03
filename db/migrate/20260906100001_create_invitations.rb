@@ -12,6 +12,6 @@ class CreateInvitations < ActiveRecord::Migration[8.0]
       t.timestamps
     end
     add_index :invitations, :token, unique: true
-    add_index :invitations, [:company_id, :email], unique: true, where: "accepted_at IS NULL"
+    add_index :invitations, [ :company_id, :email ], unique: true, where: "accepted_at IS NULL"
   end
 end

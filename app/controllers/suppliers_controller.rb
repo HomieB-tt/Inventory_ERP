@@ -1,7 +1,7 @@
 class SuppliersController < ApplicationController
-  before_action -> { require_role!(:staff) }, only: [:new, :create, :edit, :update]
-  before_action -> { require_role!(:admin) }, only: [:destroy]
-  before_action :set_supplier, only: [:show, :edit, :update, :destroy]
+  before_action -> { require_role!(:staff) }, only: [ :new, :create, :edit, :update ]
+  before_action -> { require_role!(:admin) }, only: [ :destroy ]
+  before_action :set_supplier, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @suppliers = Current.company.suppliers.order(:name)

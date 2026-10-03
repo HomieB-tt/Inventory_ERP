@@ -1,9 +1,9 @@
 require "csv"
 
 class ProductsController < ApplicationController
-  before_action -> { require_role!(:staff) }, only: [:new, :create, :edit, :update, :new_import, :import]
-  before_action -> { require_role!(:admin) }, only: [:destroy]
-  before_action :set_product, only: [:show, :edit, :update, :destroy]
+  before_action -> { require_role!(:staff) }, only: [ :new, :create, :edit, :update, :new_import, :import ]
+  before_action -> { require_role!(:admin) }, only: [ :destroy ]
+  before_action :set_product, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @products = Current.company.products.order(:name)
@@ -11,7 +11,7 @@ class ProductsController < ApplicationController
 
   def show
     @stock_by_warehouse = Current.company.warehouses.map do |w|
-      [w, @product.stock_on_hand(warehouse: w)]
+      [ w, @product.stock_on_hand(warehouse: w) ]
     end
   end
 
@@ -47,9 +47,9 @@ class ProductsController < ApplicationController
   # Read-only, so available to any signed-in role, same as index/show.
   def export
     csv_data = CSV.generate(headers: true) do |csv|
-      csv << ["sku", "name", "description", "category", "unit_price", "reorder_threshold", "total_stock_on_hand"]
+      csv << [ "sku", "name", "description", "category", "unit_price", "reorder_threshold", "total_stock_on_hand" ]
       Current.company.products.order(:name).each do |p|
-        csv << [p.sku, p.name, p.description, p.category, p.unit_price, p.reorder_threshold, p.stock_on_hand]
+        csv << [ p.sku, p.name, p.description, p.category, p.unit_price, p.reorder_threshold, p.stock_on_hand ]
       end
     end
     send_data csv_data, filename: "products-#{Date.current.iso8601}.csv", type: "text/csv"

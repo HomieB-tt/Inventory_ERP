@@ -1,7 +1,7 @@
 class WarehousesController < ApplicationController
-  before_action -> { require_role!(:staff) }, only: [:new, :create, :edit, :update]
-  before_action -> { require_role!(:admin) }, only: [:destroy]
-  before_action :set_warehouse, only: [:show, :edit, :update, :destroy]
+  before_action -> { require_role!(:staff) }, only: [ :new, :create, :edit, :update ]
+  before_action -> { require_role!(:admin) }, only: [ :destroy ]
+  before_action :set_warehouse, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @warehouses = Current.company.warehouses.order(:name)
